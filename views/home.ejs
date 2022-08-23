@@ -1,0 +1,80 @@
+<%- include('./includes/head.ejs') %>
+    <div class="container">
+        <ul class="nav nav-tabs d-flex justify-content-center">
+            <li><a class="nav-link" data-toggle="tab" href="#tab1">Điểm danh</a></li>
+            <li><a class="nav-link" data-toggle="tab" href="#tab2">Kết thúc làm</a></li>
+            <li><a class="nav-link" data-toggle="tab" href="#tab3">Nghỉ phép</a></li>
+        </ul>
+
+        <div class="tab-content">
+            <div id="tab1" class="tab-pane fade show active">
+                <h4>Điểm danh</h4>
+                <form>
+                    <div class="form-group">
+                        <label for="inp-name">Tên nhân viên:</label>
+                        <input type="email" class="form-control" id="inp-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="inp-workplace">Nơi làm việc</label>
+                        <select class="form-control" id="inp-workplace">
+                            <option>Công ty</option>
+                            <option>Nhà</option>
+                            <option>Khách Hàng</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div id="tab2" class="tab-pane fade">
+                <h4>Kết thúc làm</h4>
+            </div>
+            <div id="tab3" class="tab-pane fade">
+                <h4>Nghỉ phép</h4>
+                <form>
+                    <div class="form-group">
+                        <label for="inp-date">Ngày:</label>
+                        <div class="form-inline">
+                            <input type="date" class="form-control" name="date[]" id="inp-date">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script>
+        function listener(e) {
+            if (e.target.value) {
+                e.target.removeAttribute('id');
+                e.target.removeEventListener('change', listener);
+                // create new input
+                const newInput = document.createElement('input');
+                newInput.setAttribute('type', 'date');
+                newInput.setAttribute('name', 'date[]');
+                newInput.setAttribute('id', 'inp-date');
+                newInput.setAttribute('class', 'form-control');
+                // append
+                e.target.parentElement.appendChild(newInput);
+                // set event listener
+                e.target.addEventListener('change', e => {
+                    if (!e.target.value) {
+                        e.target.remove();
+                    }
+                })
+                addListener();
+            }
+        }
+        
+        // set listener funtion
+        function addListener() {
+            document.getElementById('inp-date')
+                .addEventListener('change', listener);
+        }
+        addListener();
+    </script>
+    <%- include('./includes/end.ejs') %>
