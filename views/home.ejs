@@ -5,31 +5,35 @@
             <li><a class="nav-link" data-toggle="tab" href="#tab2">Kết thúc làm</a></li>
             <li><a class="nav-link" data-toggle="tab" href="#tab3">Nghỉ phép</a></li>
         </ul>
-
+        <p class="text-right m-0">Đang làm việc</p>
         <div class="tab-content">
+
             <div id="tab1" class="tab-pane fade show active">
                 <h4>Điểm danh</h4>
-                <form>
+                <form action="/diemdanh" method="post">
                     <div class="form-group">
                         <label for="inp-name">Tên nhân viên:</label>
-                        <input type="email" class="form-control" id="inp-name">
+                        <input type="text" class="form-control" id="inp-name" value="<%= staff.name %>">
                     </div>
                     <div class="form-group">
                         <label for="inp-workplace">Nơi làm việc</label>
-                        <select class="form-control" id="inp-workplace">
-                            <option>Công ty</option>
-                            <option>Nhà</option>
-                            <option>Khách Hàng</option>
+                        <select class="form-control" id="inp-workplace" name="workplace">
+                            <option value="Công ty">Công ty</option>
+                            <option value="Nhà">Nhà</option>
+                            <option value="Khách Hàng">Khách Hàng</option>
                         </select>
                     </div>
                     <div class="form-group">
+                        <input type="hidden" name="id" value="<%= staff._id %>">
                         <button class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
+
             <div id="tab2" class="tab-pane fade">
                 <h4>Kết thúc làm</h4>
             </div>
+
             <div id="tab3" class="tab-pane fade">
                 <h4>Nghỉ phép</h4>
                 <form>
@@ -69,7 +73,7 @@
                 addListener();
             }
         }
-        
+
         // set listener funtion
         function addListener() {
             document.getElementById('inp-date')
