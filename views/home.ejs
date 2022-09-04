@@ -1,84 +1,119 @@
 <%- include('./includes/head.ejs') %>
     <div class="container">
         <ul class="nav nav-tabs d-flex justify-content-center">
-            <li><a class="nav-link" data-toggle="tab" href="#tab1">Điểm danh</a></li>
-            <li><a class="nav-link" data-toggle="tab" href="#tab2">Kết thúc làm</a></li>
-            <li><a class="nav-link" data-toggle="tab" href="#tab3">Nghỉ phép</a></li>
+            <li><a class="nav-link <%= tab === 1 ? 'active' : '' %>" data-toggle="tab" href="#tab1">Điểm danh</a></li>
+            <li><a class="nav-link <%= tab === 2 ? 'active' : '' %>" data-toggle="tab" href="#tab2">Kết thúc làm</a></li>
+            <li><a class="nav-link <%= tab === 3 ? 'active' : '' %>" data-toggle="tab" href="#tab3">Nghỉ phép</a></li>
         </ul>
-        <p class="text-right m-0">Đang làm việc</p>
+        <% 
+            const workingItem = submition.getWorkingItem();
+            const formatTime = date => {
+                const h = date.getHours(), m = date.getMinutes();
+                const hh = h < 10 ? '0' + h : h;
+                const mm = m < 10 ? '0' + m : m;
+                return `${hh} : ${mm}`;
+            }
+        %>
+        <p class="text-right m-0"><%= workingItem ? 'Đang' : 'Chưa' %> làm việc</p>
         <div class="tab-content">
 
-            <div id="tab1" class="tab-pane fade show active">
+            <div id="tab1" class="tab-pane fade  <%= tab === 1 ? 'show active' : '' %>">
                 <h4>Điểm danh</h4>
                 <form action="/diemdanh" method="post">
                     <div class="form-group">
-                        <label for="inp-name">Tên nhân viên:</label>
-                        <input type="text" class="form-control" id="inp-name" value="<%= staff.name %>">
+                        <label for="inp-name">Tên nhân viên</label>
+                        <input type="text" class="form-control" id="inp-name" value="<%= staff.name %>" readonly>
                     </div>
-                    <div class="form-group">
-                        <label for="inp-workplace">Nơi làm việc</label>
-                        <select class="form-control" id="inp-workplace" name="workplace">
-                            <option value="Công ty">Công ty</option>
-                            <option value="Nhà">Nhà</option>
-                            <option value="Khách Hàng">Khách Hàng</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <input type="hidden" name="id" value="<%= staff._id %>">
-                        <button class="btn btn-primary">Submit</button>
-                    </div>
+                    <% if (workingItem) { %> 
+                        <div class="form-group">
+                            <label for="inp-workplace">Nơi làm việc</label>
+                            <input type="text" class="form-control" id="inp-workplace" value="<%= workingItem.workplace %>" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="inp-time">Thời gian bắt đầu</label>
+                            <input type="text" class="form-control" id="inp-time" value="<%= formatTime(workingItem.startTime) %>" readonly>
+                        </div>
+                    <% } else { %>
+                        <div class="form-group">
+                            <label for="inp-workplace">Nơi làm việc</label>
+                            <select class="form-control" id="inp-workplace" name="workplace">
+                                <option value="Công ty">Công ty</option>
+                                <option value="Nhà">Nhà</option>
+                                <option value="Khách Hàng">Khách Hàng</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary">Submit</button>
+                        </div>
+                    <% } %>
                 </form>
             </div>
 
-            <div id="tab2" class="tab-pane fade">
+            <div id="tab2" class="tab-pane fade <%= tab === 2 ? 'show active' : '' %>">
                 <h4>Kết thúc làm</h4>
+                <table class="table my-4">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Thời gian bắt đầu</th>
+                            <th>Nơi làm việc</th>
+                            <th>Thời gian kết thúc</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% 
+                            let total = 0;
+                            submition.items.forEach((i, idx) => { 
+                        %> 
+                            <tr>
+                                <td><%= idx %></td>
+                                <td><%= formatTime(i.startTime) %></td>
+                                <td><%= i.workplace %></td>
+                                <td><%= i.endTime ? formatTime(i.endTime) : 'Chưa kết thúc' %></td>
+                            </tr>
+                        <% if (!workingItem) 
+                            total += i.endTime.getTime() - i.startTime.getTime(); 
+                        }) %>
+                    </tbody>
+                </table>
+                <% if (workingItem) { %>
+                    <form action="/ketthuc" method="post">
+                        <button class="btn btn-primary" type="submit">Kết thúc</button>
+                    </form>
+                <% } else { %>
+                    <p class="font-weight-bold">Số giờ đã làm <%= Math.round(total/(1000*60*60)*100, 2)/100 %></p>
+                <% } %>
             </div>
 
-            <div id="tab3" class="tab-pane fade">
+            <div id="tab3" class="tab-pane fade <%= tab === 3 ? 'show active' : '' %>">
                 <h4>Nghỉ phép</h4>
-                <form>
+                <form action="/nghiphep" method="post">
                     <div class="form-group">
-                        <label for="inp-date">Ngày:</label>
-                        <div class="form-inline">
-                            <input type="date" class="form-control" name="date[]" id="inp-date">
-                        </div>
+                        <label for="inp-date">Ngày</label>
+                        <input type="date" class="form-control" name="date" id="inp-date">
                     </div>
-
                     <div class="form-group">
-                        <button class="btn btn-primary">Submit</button>
+                        <label for="inp-timebreak">Số giờ nghỉ</label>
+                        <input type="number" class="form-control" name="breaktime" id="inp-timebreak" max="8" min="1">
+                        <p id="time-text" class="form-text"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="inp-reason">Lý do</label>
+                        <textarea class="form-control" name="reason" id="inp-reason" rows="3"></textarea>
+                    </div>
+                    <p class="font-weight-bold text-right">Số ngày nghỉ còn lại: <%= staff.annualLeave %></p>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     <script>
-        function listener(e) {
-            if (e.target.value) {
-                e.target.removeAttribute('id');
-                e.target.removeEventListener('change', listener);
-                // create new input
-                const newInput = document.createElement('input');
-                newInput.setAttribute('type', 'date');
-                newInput.setAttribute('name', 'date[]');
-                newInput.setAttribute('id', 'inp-date');
-                newInput.setAttribute('class', 'form-control');
-                // append
-                e.target.parentElement.appendChild(newInput);
-                // set event listener
-                e.target.addEventListener('change', e => {
-                    if (!e.target.value) {
-                        e.target.remove();
-                    }
-                })
-                addListener();
-            }
-        }
-
-        // set listener funtion
-        function addListener() {
-            document.getElementById('inp-date')
-                .addEventListener('change', listener);
-        }
-        addListener();
+        document.getElementById('inp-timebreak')
+            .addEventListener('change', e => {
+                const value = parseInt(e.target.value);
+                document.getElementById('time-text').innerText = '= ' + Math.round(value/8*100)/100 + ' Ngày';
+            })
     </script>
     <%- include('./includes/end.ejs') %>

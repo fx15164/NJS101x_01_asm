@@ -1,37 +1,56 @@
 const express = require('express');
-
-const Submition = require('./models/submition');
-const SubmitionItem = require('./models/submitionItem');
-
+const submition = require('./models/submition');
 const router = express.Router();
 
+const Submition = require('./models/submition');
+
 router.get('/', (req, res) => {
-   res.render('home', { title: 'Trang chủ', staff: req.staff });
+   let tab = req.query.tab ? parseInt(req.query.tab) : 1;
+   req.staff
+      .getTodaySubmition()
+      .then(submition => {
+         res.render('home', {
+            title: 'Trang chủ',
+            staff: req.staff,
+            submition,
+            tab
+         });
+      })
 });
 
 router.post('/diemdanh', (req, res) => {
-   const now = new Date();
-   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-   Submition.findOne({
-      date: today,
-      staff: req.staff
-   })
+   req.staff
+      .getTodaySubmition()
       .then(submition => {
-         if (submition) {
-            return submition;
-         }
-         return Submition.create({
-            date: today,
-            breakTime: 5,
-            staff: req.staff
-         })
+         return submition.startWorking(req.body.workplace);
       })
-      .then(submition => {
-         return SubmitionItem.create({
-         })
-         console.log(req.body);
+      .then(result => {
+         res.redirect('/?tab=1');
       })
 });
+
+router.post('/ketthuc', (req, res) => {
+   req.staff
+      .getTodaySubmition()
+      .then(submition => {
+         return submition.endWorking();
+      })
+      .then(result => {
+         res.redirect('/?tab=2');
+      })
+})
+
+router.post('/nghiphep', (req, res) => {
+   const date = new Date(req.body.date)
+   const breakTime = parseInt(req.body.breakTime);
+   const reason = req.body.reason;
+   Submition.find({
+      date: date,
+      staff: req.staff
+   })
+   .then(submition => {
+      console.log(submition);
+   })
+})
 
 module.exports = router;
