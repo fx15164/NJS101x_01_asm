@@ -28,7 +28,39 @@ const staffSchema = new Schema({
         type: Number,
         required: true
     },
-    imageUrl: String
+    imageUrl: String,
+    temperatures: [{    
+        temperature: {
+            type: Number,
+            required: true
+        },
+        date: {
+            type: Date,
+            required: true
+        },
+    }],
+    vacine: {
+        first: {
+            type: String,
+            required: true
+        },
+        firstDate: {
+            type: Date,
+            required: true
+        },
+        second: {
+            type: String,
+            required: true
+        },
+        secondDate: {
+            type: Date,
+            required: true
+        }
+    },
+    isCovid: {
+        type: Boolean,
+        required: true
+    }
 })
 
 staffSchema.methods.getTodaySubmition = function () {

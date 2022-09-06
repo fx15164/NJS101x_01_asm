@@ -11,19 +11,44 @@
                 return `${hh} : ${mm}`;
             }
         %>
-        <h2 class="text-center">Danh sách giờ làm</h2>
+        <h2 class="text-center">Lương tháng</h2>
+        <div>
+            <ul class="nav nav-tabs">
+                <li class="dropdown" >
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Chọn tháng </a>
+                    <ul class="dropdown-menu" role="tablist">
+                        <% hourMap.forEach((value, key) => { %>
+                            <li>
+                                <a class="nav-link" data-toggle="tab" href="#<%= key %>" role="tab"><%= key %></a>
+                            </li>
+                        <% }) %>
+                    </ul>
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <% hourMap.forEach((value, key) => { %>
+                    <div class="tab-pane fade" id="<%= key %>" role="tabpanel">
+                        <p class="mt-4">Tổng số giờ đã làm: <%= value %></p>
+                        <p>Số giờ đã làm thêm: <%= value - 30*8 %></p>
+                        <p><strong>Lương: <%= staff.salaryScale*3000000 + (value - 30*8)*200000 %></strong></p>
+                    </div>
+                <% }) %>
+              </div>
+        </div>
+        <h3 class="text-center mt-4">Danh sách giờ làm</h3>
         <table class="table">
             <thead>
               <tr>
                 <th scope="col">Ngày</th>
                 <th scope="col">Nơi làm việc</th>
                 <th scope="col">Số giờ nghỉ phép</th>
-                <th scope="col">Giờ bắt đầu</th>\
+                <th scope="col">Giờ bắt đầu</th>
                 <th scope="col">Giờ kết thúc</th>
               </tr>
             </thead>
             <tbody>
-                <% submitsions.forEach(s => { %>
+                <% submitsions.forEach(s => { 
+                    let total = 0;
+                %>
                     <% s.items.forEach((i, idx) => { %>
                         <tr>
                             <td><%= formatDate(s.date) %></td>
@@ -32,13 +57,17 @@
                             <td><%= formatTime(i.startTime) %></td>
                             <td><%= i.endTime ? formatTime(i.endTime) : 'Chưa kết thúc' %></td>
                         </tr>
-                        <% if (idx === s.items.length - 1) { %> 
-                            <tr>
-                                <td><%= formatDate(s.date) %></td>
-                                <td colspan="2">Tổng số giờ đã làm: 6h</td>
-                                <td colspan="2">Số giờ làm thêm: 4h</td>
+                        <% if (i.endTime) {
+                            total += i.endTime.getTime() - i.startTime.getTime();
+                            if (idx === s.items.length - 1) {
+                                total = Math.round(total/(1000*60*60)) + s.breakTime;
+                        %> 
+                            <tr class="text-bold">
+                                <td><strong><%= formatDate(s.date) %></strong></td>
+                                <td colspan="2"><strong>Tổng số giờ đã làm: <%= total %>h</strong></td>
+                                <td colspan="2"><strong>Số giờ làm thêm: <%= total - 8 %>h</strong></td>
                             </tr>
-                        <% } %>
+                        <% }} %>
                     <% }) %>
                 <% }) %>
             </tbody>

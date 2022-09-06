@@ -100,19 +100,83 @@ router.get('/giolam', (req, res) => {
    Submition
       .find({ staff: req.staff })
       .then(submitsions => {
-         const salaryMap = new Map();
+         const hourMap = new Map();
          submitsions.forEach(s => {
+            // cacl over time and inover time
+            let total = 0;
+            s.items.forEach(i => {
+               if (i.endTime) {
+                  total += i.endTime.getTime() - i.startTime.getTime();
+               }
+            });
+            total = Math.round(total/(1000*60*60)) + s.breakTime;
+            // key by month
             const key = `${s.date.getMonth()}/${s.date.getFullYear()}`;
-            if (!salaryMap[key]) {
-               salaryMap
+            if (!hourMap.get(key)) {
+               hourMap.set(key, total);
+            } else {
+               hourMap.set(key, hourMap.get(key) + total);
             }
-         })
+         });
          res.render('submitsions', {
             title: 'Giờ làm',
             path: '/giolam',
-            submitsions: submitsions
+            submitsions: submitsions,
+            hourMap: hourMap,
+            staff: req.staff
          });
       })
+});
+
+router.get('/covid', (req, res) => {
+   res.render('covid', {
+      title: 'Khai báo covid',
+      path: '/covid'
+   });
+});
+
+router.post('/nhietdo', (req, res) => {
+   const temperature = parseInt(req.body.temperature);
+   if (temperature > 0) {
+      req.staff.temperatures.push({
+         temperature,
+         date: new Date()
+      });
+      req.staff.save()
+         .then(result => {
+            res.redirect('/covid');
+         })
+   }
+});
+
+router.post('/vacine', (req, res) => {
+   const first = req.body.first;
+   const second = req.body.second;
+   const firstDate = new Date(req.body.firstdate);
+   const secondDate = new Date(req.body.seconddate);
+   req.staff.vacine = {
+      first,
+      second,
+      firstDate,
+      secondDate
+   };
+   req.staff.save()
+      .then(result => {
+         res.redirect('/covid');
+      });
+});
+
+router.post('/trangthai', (req, res) => {
+   const status = req.body.status;
+   if (status == 1) {
+      req.staff.isCovid = true;
+   } else {
+      req.staff.isCovid = false;
+   }
+   req.staff.save()
+   .then(result => {
+      res.redirect('/covid');
+   });
 });
 
 module.exports = router;
