@@ -1,0 +1,47 @@
+<%- include('./includes/head.ejs') %>
+    <div class="container">
+        <% 
+            function formatDate(d) {
+                return `${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`
+            }
+            const formatTime = date => {
+                const h = date.getHours(), m = date.getMinutes();
+                const hh = h < 10 ? '0' + h : h;
+                const mm = m < 10 ? '0' + m : m;
+                return `${hh} : ${mm}`;
+            }
+        %>
+        <h2 class="text-center">Danh sách giờ làm</h2>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Ngày</th>
+                <th scope="col">Nơi làm việc</th>
+                <th scope="col">Số giờ nghỉ phép</th>
+                <th scope="col">Giờ bắt đầu</th>\
+                <th scope="col">Giờ kết thúc</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% submitsions.forEach(s => { %>
+                    <% s.items.forEach((i, idx) => { %>
+                        <tr>
+                            <td><%= formatDate(s.date) %></td>
+                            <td><%= i.workplace %></td>
+                            <td><%= s.breakTime %></td>
+                            <td><%= formatTime(i.startTime) %></td>
+                            <td><%= i.endTime ? formatTime(i.endTime) : 'Chưa kết thúc' %></td>
+                        </tr>
+                        <% if (idx === s.items.length - 1) { %> 
+                            <tr>
+                                <td><%= formatDate(s.date) %></td>
+                                <td colspan="2">Tổng số giờ đã làm: 6h</td>
+                                <td colspan="2">Số giờ làm thêm: 4h</td>
+                            </tr>
+                        <% } %>
+                    <% }) %>
+                <% }) %>
+            </tbody>
+          </table>
+    </div>
+    <%- include('./includes/end.ejs') %>

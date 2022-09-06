@@ -6,17 +6,17 @@
       
         <div class="collapse navbar-collapse" id="navbar">
           <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Trang chủ</a>
+            <li class="nav-item <%= path === '/' ? 'active' : '' %>">
+              <a class="nav-link" href="/">Trang chủ</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Xem thông tin</a>
+            <li class="nav-item <%= path === '/thongtin' ? 'active' : '' %>">
+              <a class="nav-link" href="/thongtin">Xem thông tin</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Giờ làm</a>
+            <li class="nav-item <%= path === '/giolam' ? 'active' : '' %>">
+              <a class="nav-link" href="/giolam">Giờ làm</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Khai báo Covid</a>
+            <li class="nav-item <%= path === '/covid' ? 'active' : '' %>">
+                <a class="nav-link" href="/covid">Khai báo Covid</a>
               </li>
           </ul>
         </div>

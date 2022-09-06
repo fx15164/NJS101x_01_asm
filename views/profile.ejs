@@ -1,0 +1,45 @@
+<%- include('./includes/head.ejs') %>
+    <div class="container">
+        <% 
+            function formatDate(d) {
+                return `${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`
+            }
+        %>
+        <h2 class="text-center">Thông tin nhân viên</h2>
+        <form class="mt-4" action="/thongtin" method="post">
+            <div class="form-group">
+                <label for="inp-id">Mã</label>
+                <input type="text" class="form-control" id="inp-id" value="<%= staff.id %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inp-name">Tên nhân viên</label>
+                <input type="text" class="form-control" id="inp-name" value="<%= staff.name %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inp-doB">Ngày bắt đầu</label>
+                <input type="text" class="form-control" id="inp-doB" value="<%= formatDate(staff.doB) %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inp-salary-scale">Hệ số lương</label>
+                <input type="text" class="form-control" id="inp-salary-scale" value="<%= staff.salaryScale %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inp-start-date">Ngày bắt đầu</label>
+                <input type="text" class="form-control" id="inp-start-date" value="<%= formatDate(staff.startDate) %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inp-department">Phòng ban</label>
+                <input type="text" class="form-control" id="inp-department" value="<%= staff.department %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inp-annual-leave">Nghỉ thường niên</label>
+                <input type="text" class="form-control" id="inp-annual-leave" value="<%= staff.annualLeave %>" readonly>
+            </div>
+            <div class="form-group">
+                <label for="inp-image">Ảnh</label>
+                <input type="text" class="form-control" id="inp-image" name="image" value="<%= staff.imageUrl %>">
+            </div>
+            <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+    </div>
+    <%- include('./includes/end.ejs') %>
