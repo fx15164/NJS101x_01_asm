@@ -4,8 +4,9 @@ const mongoose = require('mongoose');
 
 const Staff = require('./models/staff');
 
-const router = require('./router');
-const staff = require('./models/staff');
+const homeRouter = require('./routers/home');
+const covidRouter = require('./routers/covid');
+const otherRouter = require('./routers/other');
 
 const app = express();
 
@@ -25,7 +26,9 @@ app.use((req, res, next) => {
 })
 
 // router
-app.use(router);
+app.use(homeRouter);
+app.use(covidRouter);
+app.use(otherRouter);
 
 // start
 mongoose.connect('mongodb://localhost:27017/asm')
