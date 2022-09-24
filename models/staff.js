@@ -8,6 +8,14 @@ const staffSchema = new Schema({
         type: String,
         required: true
     },
+    email: {
+        type: String,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
     doB: {
         type: Date,
         required: true
@@ -31,35 +39,28 @@ const staffSchema = new Schema({
     imageUrl: String,
     temperatures: [{    
         temperature: {
-            type: Number,
-            required: true
+            type: Number
         },
         date: {
-            type: Date,
-            required: true
+            type: Date
         },
     }],
     vacine: {
         first: {
-            type: String,
-            required: true
+            type: String
         },
         firstDate: {
-            type: Date,
-            required: true
+            type: Date
         },
         second: {
-            type: String,
-            required: true
+            type: String
         },
         secondDate: {
-            type: Date,
-            required: true
+            type: Date
         }
     },
     isCovid: {
-        type: Boolean,
-        required: true
+        type: Boolean
     }
 })
 
@@ -80,6 +81,9 @@ staffSchema.methods.getTodaySubmition = function () {
                 breakTime: 0,
                 staff: this
             })
+        })
+        .then(submition => {
+            return submition.populate('items');
         })
 }
 

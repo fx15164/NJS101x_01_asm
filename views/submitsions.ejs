@@ -2,7 +2,7 @@
     <div class="container">
         <% 
             function formatDate(d) {
-                return `${d.getDate()}/${d.getMonth()}/${d.getFullYear()}`
+                return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
             }
             const formatTime = date => {
                 const h = date.getHours(), m = date.getMinutes();

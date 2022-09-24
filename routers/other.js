@@ -1,10 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
 
 const Submition = require('../models/submition');
+const isAuth = require('../middlewares/is-auth');
+
+const upload = require('../util/upload');
 
 // GET => /thongtin
-router.get('/thongtin', (req, res) => {
+router.get('/thongtin', isAuth, (req, res) => {
     res.render('profile', {
        title: 'Thông tin cá nhân',
        path: '/thongtin',
@@ -13,19 +17,34 @@ router.get('/thongtin', (req, res) => {
  });
  
  // POST => /thongtin
- router.post('/thongtin', (req, res) => {
-    req.staff.imageUrl = req.body.image;
-    req.staff
-       .save()
-       .then(result => {
-          res.redirect('/thongtin');
-       })
- });
+router.post(
+   '/thongtin',
+   isAuth,
+   upload.single('avatar'),
+   (req, res) => {
+      if (!req.file) {
+         return res.redirect('/thongtin');
+      }
+      const oldUrl = req.staff.imageUrl;
+      req.staff.imageUrl = req.file.path;
+      req.staff
+         .save()
+         .then(result => {
+            // delete old avatar
+            return fs.unlink(oldUrl, err => {
+               if (err) {
+                  console.log(err);
+               }
+               res.redirect('/thongtin');
+            });
+         })
+   });
  
  // GET => /giolam
- router.get('/giolam', (req, res) => {
+ router.get('/giolam', isAuth, (req, res) => {
     Submition
        .find({ staff: req.staff })
+       .populate('items')
        .then(submitsions => {
           const hourMap = new Map();
           submitsions.forEach(s => {
@@ -38,7 +57,7 @@ router.get('/thongtin', (req, res) => {
              });
              total = Math.round(total/(1000*60*60)) + s.breakTime;
              // key by month
-             const key = `${s.date.getMonth()}/${s.date.getFullYear()}`;
+             const key = `${s.date.getMonth() + 1}/${s.date.getFullYear()}`;
              if (!hourMap.get(key)) {
                 hourMap.set(key, total);
              } else {

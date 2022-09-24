@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
+const Item = require('./submitionItem');
+
 const submitionSchema = new Schema({
     date: {
         type: Date,
@@ -19,17 +21,8 @@ const submitionSchema = new Schema({
         ref: 'Staff' 
     },
     items: [{ 
-        startTime: {
-            type: Date,
-            required: true
-        },
-        endTime: {
-            type: Date
-        },
-        workplace: {
-            type: String,
-            required: true
-        }
+        type: mongoose.Types.ObjectId,
+        ref: 'SubmitionItem'
     }]
 })
 
@@ -37,15 +30,21 @@ submitionSchema.methods.startWorking = function (workplace) {
     if (this.getWorkingItem()) {
         return;
     }
-    const updatedItems = [
-        ...this.items,
-        {
-            startTime: Date.now(),
-            workplace: workplace
-        }
-    ]
-    this.items = updatedItems;
-    return this.save();
+    const item = new Item({
+        startTime: Date.now(),
+        workplace: workplace,
+        endTime: null
+    })
+
+    return item.save()
+        .then(item => {
+            const updatedItems = [
+                ...this.items,
+                item
+            ]
+            this.items = updatedItems;
+            return this.save();
+        })
 }
 
 submitionSchema.methods.endWorking = function () {
@@ -53,11 +52,10 @@ submitionSchema.methods.endWorking = function () {
     if (idx < 0) {
         return;
     }
-    const updatedItems = [...this.items];
-    updatedItems[idx].endTime = Date.now();
+    const item = this.items[idx];
+    item.endTime = Date.now();
     //
-    this.items = updatedItems
-    return this.save();
+    return item.save();
 }
 
 submitionSchema.methods.getWorkingItem = function () {

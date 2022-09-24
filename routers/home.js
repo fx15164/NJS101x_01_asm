@@ -2,9 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const Submition = require('../models/submition');
+const isAuth = require('../middlewares/is-auth');
+
 
 // GET => /
-router.get('/', (req, res) => {
+router.get('/', isAuth, (req, res) => {
    let tab = req.query.tab ? parseInt(req.query.tab) : 1;
    req.staff
       .getTodaySubmition()
@@ -20,7 +22,7 @@ router.get('/', (req, res) => {
 });
 
 // POST => /diemdanh
-router.post('/diemdanh', (req, res) => {
+router.post('/diemdanh', isAuth, (req, res) => {
    req.staff
       .getTodaySubmition()
       .then(submition => {
@@ -32,7 +34,7 @@ router.post('/diemdanh', (req, res) => {
 });
 
 // POST => /kethuc
-router.post('/ketthuc', (req, res) => {
+router.post('/ketthuc', isAuth, (req, res) => {
    req.staff
       .getTodaySubmition()
       .then(submition => {
@@ -44,7 +46,7 @@ router.post('/ketthuc', (req, res) => {
 })
 
 // POST => /nghiphep
-router.post('/nghiphep', (req, res) => {
+router.post('/nghiphep', isAuth, (req, res) => {
    const breakTime = parseInt(req.body.breaktime);
    const reason = req.body.reason;
 
@@ -67,6 +69,7 @@ router.post('/nghiphep', (req, res) => {
       })
       .then(submition => {
          const { annualLeave } = req.staff;
+         // check breakTime
          if (breakTime > 0 && breakTime <= 8 && breakTime <= annualLeave*8) {
             submition.breakTime = breakTime;
             submition.reason = reason;
