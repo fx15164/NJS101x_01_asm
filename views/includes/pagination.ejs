@@ -1,0 +1,41 @@
+<div class="mt-2">
+    <% 
+        const previousPage = currentPage - 1;
+        const hasPrevPage = currentPage > 2;
+        const nextPage = currentPage + 1;
+        const lastPage = Math.ceil(totalItem / itemPerPage);
+        const hasNextPage = currentPage < lastPage;
+        const hasLastPage = currentPage != lastPage && nextPage != lastPage;
+    %>
+    <ul class="pagination justify-content-center">
+        <% if (currentPage != 1)  { %>
+            <li class="page-item"><a class="page-link" href="?page=1&item=<%= itemPerPage %>">1</a></li>
+        <% } %>
+
+        <% if (hasPrevPage)  { %>
+            <li class="page-item"><a class="page-link" 
+                href="?page=<%= previousPage %>&item=<%= itemPerPage %>"><%= previousPage %></a></li>
+        <% } %>
+
+        <li class="page-item active"><a class="page-link" 
+            href="?page=<%= currentPage %>&item=<%= itemPerPage %>"><%= currentPage %></a></li>
+
+        <% if (hasNextPage)  { %>
+            <li class="page-item"><a class="page-link" 
+                href="?page=<%= nextPage %>&item=<%= itemPerPage %>"><%= nextPage %></a></li>
+        <% } %>
+
+        <% if (hasLastPage)  { %>
+            <li class="page-item"><a class="page-link" 
+                href="?page=<%= lastPage %>&item=<%= itemPerPage %>"><%= lastPage %></a></li>
+        <% } %>
+
+        <li class="mx-4">
+            <select class="form-control" onchange="location = this.value;">
+                <option <%= itemPerPage == 20 ? 'selected' : null %> value="/giolam?item=20">20</option>
+                <option <%= itemPerPage == 30 ? 'selected' : null %> value="/giolam?item=30">30</option>
+                <option <%= itemPerPage == 40 ? 'selected' : null %> value="/giolam?item=40">40</option>
+            </select>
+        </li>
+      </ul>
+  </div>

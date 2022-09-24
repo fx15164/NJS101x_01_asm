@@ -38,39 +38,33 @@
         <table class="table">
             <thead>
               <tr>
-                <th scope="col">Ngày</th>
-                <th scope="col">Nơi làm việc</th>
-                <th scope="col">Số giờ nghỉ phép</th>
-                <th scope="col">Giờ bắt đầu</th>
-                <th scope="col">Giờ kết thúc</th>
+                <th>Ngày</th>
+                <th>Nơi làm việc</th>
+                <th>Số giờ nghỉ phép</th>
+                <th>Giờ bắt đầu</th>
+                <th>Giờ kết thúc</th>
+                <th class="text-center">Tổng số giờ</th>
+                <th class="text-center">Giờ làm thêm</th>
               </tr>
             </thead>
             <tbody>
-                <% submitsions.forEach(s => { 
-                    let total = 0;
-                %>
-                    <% s.items.forEach((i, idx) => { %>
+                    <% items.forEach(i => { %>
                         <tr>
-                            <td><%= formatDate(s.date) %></td>
+                            <td><%= formatDate(i.submition.date) %></td>
                             <td><%= i.workplace %></td>
-                            <td><%= s.breakTime %></td>
+                            <td><%= i.submition.breakTime %></td>
                             <td><%= formatTime(i.startTime) %></td>
                             <td><%= i.endTime ? formatTime(i.endTime) : 'Chưa kết thúc' %></td>
+                            <% if (i.totalHour) { %> 
+                                <td class="text-center"><strong><%= i.totalHour %>h</strong></td>
+                                <td class="text-center"><strong><%= i.totalHour - 8 %>h</strong></td>
+                            <% } else { %>
+                                <td></td><td></td>
+                            <% } %>
                         </tr>
-                        <% if (i.endTime) {
-                            total += i.endTime.getTime() - i.startTime.getTime();
-                            if (idx === s.items.length - 1) {
-                                total = Math.round(total/(1000*60*60)) + s.breakTime;
-                        %> 
-                            <tr class="text-bold">
-                                <td><strong><%= formatDate(s.date) %></strong></td>
-                                <td colspan="2"><strong>Tổng số giờ đã làm: <%= total %>h</strong></td>
-                                <td colspan="2"><strong>Số giờ làm thêm: <%= total - 8 %>h</strong></td>
-                            </tr>
-                        <% }} %>
                     <% }) %>
-                <% }) %>
             </tbody>
           </table>
+          <%- include('./includes/pagination.ejs', { itemPerPage, currentPage, totalItem }) %>
     </div>
     <%- include('./includes/end.ejs') %>

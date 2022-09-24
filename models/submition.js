@@ -33,7 +33,8 @@ submitionSchema.methods.startWorking = function (workplace) {
     const item = new Item({
         startTime: Date.now(),
         workplace: workplace,
-        endTime: null
+        endTime: null,
+        submition: this
     })
 
     return item.save()
