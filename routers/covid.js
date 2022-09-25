@@ -7,7 +7,8 @@ const isAuth = require('../middlewares/is-auth');
 router.get('/covid', isAuth, (req, res) => {
     res.render('covid', {
        title: 'Khai báo covid',
-       path: '/covid'
+       path: '/covid',
+       staff: req.staff
     });
  });
  

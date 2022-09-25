@@ -37,6 +37,22 @@ const staffSchema = new Schema({
         required: true
     },
     imageUrl: String,
+
+    // role
+    isManager: {
+        type: Boolean,
+        required: true
+    },
+    manager: {
+        type: mongoose.Types.ObjectId,
+        ref: 'Staff'  
+    },
+    staffs: [{
+        type: mongoose.Types.ObjectId,
+        ref: 'Staff'
+    }],
+
+    // covid
     temperatures: [{    
         temperature: {
             type: Number

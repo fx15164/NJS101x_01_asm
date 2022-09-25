@@ -32,12 +32,14 @@ router.post(
          .save()
          .then(result => {
             // delete old avatar
-            return fs.unlink(oldUrl, err => {
-               if (err) {
-                  console.log(err);
-               }
-               res.redirect('/thongtin');
-            });
+            if (oldUrl) {
+               fs.unlink(oldUrl, err => {
+                  if (err) {
+                     console.log(err);
+                  }
+               });
+            }
+            res.redirect('/thongtin');
          })
    });
 
@@ -54,7 +56,7 @@ router.get('/giolam', isAuth, (req, res) => {
       .then(submitsions => {
          submitsions.forEach(s => {
 
-            // cacl over time and inover time
+            // cacl all month hour
             let total = 0;
             s.items.forEach(i => {
                if (i.endTime) {
@@ -72,6 +74,7 @@ router.get('/giolam', isAuth, (req, res) => {
             }
          });
 
+         // find and pagnination
          return SubmitionItem
             .find({ submition: { $in: submitsions }})
             .countDocuments()

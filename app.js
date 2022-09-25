@@ -36,6 +36,7 @@ app.use((req, res, next) => {
         return next();
     }
     Staff.findOne({ _id: req.session.staff._id })
+        .populate(['manager', 'staffs'])
         .then(staff => {
             req.staff = staff;
             next();
@@ -62,18 +63,35 @@ mongoose.connect('mongodb://localhost:27017/asm')
         return Staff.findOne()
             .then(staff => {
                 if (!staff) {
-                    return new Staff({
+                    const manager = new Staff({
                         name: "Joe Dynim",
-                        email: 'joedynim@gmail.com',
-                        password: 'joedynim',
+                        email: 'manager@gmail.com',
+                        password: 'manager',
                         doB: Date.now(),
                         salaryScale: 1.2,
                         startDate: Date.now(),
                         department: 'x',
-                        annualLeave: 4
-                    }).save();
+                        annualLeave: 4,
+                        isManager: true
+                    });
+                    for (let i = 0; i < 3; i++) {
+                        const staff = new Staff({
+                            name: "Staff " + i,
+                            email: `staff${i}@gmail.com`,
+                            password: `staff${i}`,
+                            doB: Date.now(),
+                            salaryScale: 1.2,
+                            startDate: Date.now(),
+                            department: 'x',
+                            annualLeave: 4,
+                            isManager: false,
+                            manager: manager
+                        });
+                        manager.staffs.push(staff);
+                        staff.save();
+                    }
+                    return manager.save();
                 }
-                return staff;
             })
             .then(result => {
                 app.listen(3000);

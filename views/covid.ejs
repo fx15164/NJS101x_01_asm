@@ -1,49 +1,68 @@
 <%- include('./includes/head.ejs') %>
-    <div class="container">
-        <div>
-            <h4>Đăng ký thân nhiệt</h4>
-            <form action="/nhietdo" method="post">
-                <div class="form-group">
-                    <label for="temperature">Temperature</label>
-                    <input class="form-control" type="number" name="temperature" id="temperature" />
-                </div>
-                <button class="btn btn-primary">Submit</button>
-            </form>
+    <div class="container py-4 d-flex">
+        <div class="w-50 <%= staff.isManager ? '' : 'mx-auto' %>">
+            <div>
+                <h4 class="text-center">Đăng ký thân nhiệt</h4>
+                <form action="/nhietdo" method="post">
+                    <div class="form-group">
+                        <label for="temperature">Temperature</label>
+                        <input class="form-control" type="number" name="temperature" id="temperature" />
+                    </div>
+                    <button class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="mt-4">
+                <h4>Đăng ký thông tin Vacine</h4>
+                <form action="/vacine" method="post">
+                    <div class="form-group">
+                        <label for="first">Mũi 1</label>
+                        <input class="form-control" type="text" name="first" id="first" />
+                    </div>
+                    <div class="form-group">
+                        <label for="first-date">Ngày tiêm mũi 1</label>
+                        <input class="form-control" type="date" name="firstdate" id="first-date" />
+                    </div>
+                    <div class="form-group">
+                        <label for="second">Mũi 2</label>
+                        <input class="form-control" type="text" name="second" id="second" />
+                    </div>
+                    <div class="form-group">
+                        <label for="second-date">Ngày tiêm mũi 2</label>
+                        <input class="form-control" type="date" name="seconddate" id="second-date" />
+                    </div>
+                    <button class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+            <div class="my-4">
+                <h4>Đăng ký dương tính Covid 19</h4>
+                <form action="/trangthai" method="post">
+                    <div class="form-group">
+                        <label for="status">Trạng thái</label>
+                        <select class="form-control" name="status" id="status">
+                            <option value="1">Dương tính</option>
+                            <option value="0">Âm tính</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary">Submit</button>
+                </form>
+            </div>
         </div>
-        <div class="mt-4">
-            <h4>Đăng ký thông tin Vacine</h4>
-            <form action="/vacine" method="post">
-                <div class="form-group">
-                    <label for="first">Mũi 1</label>
-                    <input class="form-control" type="text" name="first" id="first" />
+        <% if (staff.isManager) { %>
+            <div class="w-50">
+                <h4 class="text-center">Thông tin Covid nhân viên</h4>
+                <div class="pl-4 mt-4">
+                    <% staff.staffs.forEach(s => { %> 
+                        <div class="card mt-4">
+                            <div class="card-body">
+                              <h5 class="card-title"><%= s.name %></h5>
+                              <p class="card-text">Tình trạng: <strong><%= s.ísCovid ? 'Dương tính' : 'Âm tính' %></strong></p>
+                              <p class="card-text">Mũi 1: <%= s.vacine.first ? s.vacine.first : 'Chưa khai báo' %></p>
+                              <p class="card-text">Mũi 2: <%= s.vacine.first ? s.vacine.second : 'Chưa khai báo' %></p>
+                            </div>
+                          </div>
+                    <% }) %>
                 </div>
-                <div class="form-group">
-                    <label for="first-date">Ngày tiêm mũi 1</label>
-                    <input class="form-control" type="date" name="firstdate" id="first-date" />
-                </div>
-                <div class="form-group">
-                    <label for="second">Mũi 2</label>
-                    <input class="form-control" type="text" name="second" id="second" />
-                </div>
-                <div class="form-group">
-                    <label for="second-date">Ngày tiêm mũi 2</label>
-                    <input class="form-control" type="date" name="seconddate" id="second-date" />
-                </div>
-                <button class="btn btn-primary">Submit</button>
-            </form>
-        </div>
-        <div class="my-4">
-            <h4>Đăng ký dương tính Covid 19</h4>
-            <form action="/trangthai" method="post">
-                <div class="form-group">
-                    <label for="status">Trạng thái</label>
-                    <select class="form-control" name="status" id="status">
-                        <option value="1">Dương tính</option>
-                        <option value="0">Âm tính</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary">Submit</button>
-            </form>
-        </div>
+            </div>
+        <% } %>
     </div>
     <%- include('./includes/end.ejs') %>

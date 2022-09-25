@@ -11,6 +11,13 @@
                 return `${hh} : ${mm}`;
             }
         %>
+        <% if (staff.manager) { %> 
+            <small class="mt-4">
+                Mã quản lý: <%= staff.manager._id %> <br>
+                Tên quản lý: <%= staff.manager.name %>
+            </small>
+        <% } %>
+
         <h2 class="text-center">Lương tháng</h2>
         <div>
             <ul class="nav nav-tabs">
@@ -34,6 +41,7 @@
                 <% }) %>
               </div>
         </div>
+
         <h3 class="text-center mt-4">Danh sách giờ làm</h3>
         <table class="table">
             <thead>
