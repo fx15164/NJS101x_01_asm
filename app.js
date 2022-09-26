@@ -62,13 +62,13 @@ app.use((err, req, res, next) => {
 })
 
 // start
-mongoose.connect('mongodb://localhost:27017/asm')
+mongoose.connect('mongodb+srv://admin:admin@asm1.yjqy9ym.mongodb.net/?retryWrites=true&w=majority')
     .then(() => {
         return Staff.findOne()
             .then(staff => {
                 if (!staff) {
                     const manager = new Staff({
-                        name: "Joe Dynim",
+                        name: "Anh Quản LÝ",
                         email: 'manager@gmail.com',
                         password: 'manager',
                         doB: Date.now(),
@@ -80,7 +80,7 @@ mongoose.connect('mongodb://localhost:27017/asm')
                     });
                     for (let i = 0; i < 3; i++) {
                         const staff = new Staff({
-                            name: "Staff " + i,
+                            name: "Nhân viên " + i,
                             email: `staff${i}@gmail.com`,
                             password: `staff${i}`,
                             doB: Date.now(),
@@ -98,7 +98,9 @@ mongoose.connect('mongodb://localhost:27017/asm')
                 }
             })
             .then(result => {
-                app.listen(3000);
+                app.listen(process.env.PORT || 3000, () => {
+                    console.log('Server is running');
+                });
             })
     })
     .catch(err => {
