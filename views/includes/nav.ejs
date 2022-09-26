@@ -17,7 +17,12 @@
             </li>
             <li class="nav-item <%= path === '/covid' ? 'active' : '' %>">
                 <a class="nav-link" href="/covid">Khai báo Covid</a>
-              </li>
+            </li>
+            <% if (staff && staff.isManager) { %>
+              <li class="nav-item <%= path === '/xacnhan' ? 'active' : '' %>">
+                <a class="nav-link" href="/xacnhan">Xác nhận</a>
+            </li>
+            <% } %>
           </ul>
         </div>
           <% if (!isLoggedIn) { %> 

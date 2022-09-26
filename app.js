@@ -10,6 +10,7 @@ const authRouter = require('./routers/auth');
 const homeRouter = require('./routers/home');
 const covidRouter = require('./routers/covid');
 const otherRouter = require('./routers/other');
+const managerRouter = require('./routers/manager');
 
 const app = express();
 
@@ -33,12 +34,14 @@ app.use((req, res, next) => {
     res.locals.isLoggedIn = req.session.isLoggedIn;
     // // set request staff
     if (!req.session.staff) {
+        res.locals.staff = null;
         return next();
     }
     Staff.findOne({ _id: req.session.staff._id })
         .populate(['manager', 'staffs'])
         .then(staff => {
             req.staff = staff;
+            res.locals.staff = staff;
             next();
         })
 })
@@ -51,6 +54,7 @@ app.use(authRouter);
 app.use(homeRouter);
 app.use(covidRouter);
 app.use(otherRouter);
+app.use(managerRouter);
 
 // handle error
 app.use((err, req, res, next) => {

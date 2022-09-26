@@ -50,7 +50,10 @@
         <% if (staff.isManager) { %>
             <div class="w-50">
                 <h4 class="text-center">Thông tin Covid nhân viên</h4>
-                <div class="pl-4 mt-4">
+                <div class="pl-4">
+                    <div class="text-right">
+                        <a href="/covid.pdf">Xuất file PDF</a>
+                    </div>
                     <% staff.staffs.forEach(s => { %> 
                         <div class="card mt-4">
                             <div class="card-body">

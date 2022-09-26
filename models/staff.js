@@ -77,7 +77,10 @@ const staffSchema = new Schema({
     },
     isCovid: {
         type: Boolean
-    }
+    },
+
+    // salary
+    confirmedMonth: []
 })
 
 staffSchema.methods.getTodaySubmition = function () {

@@ -17,29 +17,27 @@
                 Tên quản lý: <%= staff.manager.name %>
             </small>
         <% } %>
-
         <h2 class="text-center">Lương tháng</h2>
         <div>
-            <ul class="nav nav-tabs">
-                <li class="dropdown" >
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#"> Chọn tháng </a>
-                    <ul class="dropdown-menu" role="tablist">
-                        <% hourMap.forEach((value, key) => { %>
-                            <li>
-                                <a class="nav-link" data-toggle="tab" href="#<%= key %>" role="tab"><%= key %></a>
-                            </li>
-                        <% }) %>
-                    </ul>
-              </ul>
-              <div class="tab-content" id="myTabContent">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <% hourMap.forEach((value, key) => { %>
-                    <div class="tab-pane fade" id="<%= key %>" role="tabpanel">
+                    <li class="nav-item">
+                        <a class="nav-link" id="<%= key %>-tab" data-toggle="tab" href="#<%= key %>" role="tab" aria-controls="<%= key %>" aria-selected="true"><%= key %></a>
+                    </li>
+                <% }) %>
+            </ul>
+            
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <% hourMap.forEach((value, key) => { %>
+                    <div class="tab-pane" id="<%= key %>" role="tabpanel" aria-labelledby="<%= key %>-tab">
                         <p class="mt-4">Tổng số giờ đã làm: <%= value %></p>
                         <p>Số giờ đã làm thêm: <%= value - 30*8 %></p>
                         <p><strong>Lương: <%= staff.salaryScale*3000000 + (value - 30*8)*200000 %></strong></p>
                     </div>
                 <% }) %>
-              </div>
+            </div>
         </div>
 
         <h3 class="text-center mt-4">Danh sách giờ làm</h3>
@@ -63,7 +61,7 @@
                             <td><%= i.submition.breakTime %></td>
                             <td><%= formatTime(i.startTime) %></td>
                             <td><%= i.endTime ? formatTime(i.endTime) : 'Chưa kết thúc' %></td>
-                            <% if (i.totalHour) { %> 
+                            <% if (i.totalHour || i.totalHour == 0) { %> 
                                 <td class="text-center"><strong><%= i.totalHour %>h</strong></td>
                                 <td class="text-center"><strong><%= i.totalHour - 8 %>h</strong></td>
                             <% } else { %>

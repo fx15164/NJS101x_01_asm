@@ -116,7 +116,7 @@ router.get('/giolam', isAuth, (req, res) => {
             hourMap: hourMap,
             staff: req.staff
          });
-      })
+      });
 });
 
 module.exports = router;

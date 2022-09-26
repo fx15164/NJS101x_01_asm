@@ -1,0 +1,109 @@
+<%- include('./includes/head.ejs') %>
+    <% 
+    function formatDate(d) {
+        return `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`
+    }
+    const formatTime = date => {
+        const h = date.getHours(), m = date.getMinutes();
+        const hh = h < 10 ? '0' + h : h;
+        const mm = m < 10 ? '0' + m : m;
+        return `${hh} : ${mm}`;
+    }
+    %>
+    <div class="container">
+        <h4 class="text-center mt-2">GIờ làm nhân viên</h4>
+        <% if (!itemsMap) { %> 
+            <div class="row">
+                <% staff.staffs.forEach(s=> { %>
+                    <div class="card mt-4 col-6">
+                        <div class="card-body">
+                            <p>Id: <%= s._id.toString() %></p>
+                            <p class="card-title">Tên nhân viên: <strong><%= s.name %></strong></p>
+                            <div class="text-center">
+                                <a href="?id=<%= s._id.toString() %>" class="btn btn-primary">Xem</a>
+                            </div>
+                        </div>
+                    </div>
+                    <% }) %>
+            </div>
+        <% } else { %> 
+            <a href="/xacnhan" class="btn btn-primary">Trở lại</a>
+            <div class="mt-4">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <% itemsMap.forEach((value, key) => { %>
+                        <li class="nav-item">
+                            <a class="nav-link <%= selectedMonth === key ? 'show active' : '' %>" id="<%= key %>-tab" 
+                                data-toggle="tab" href="#<%= key %>" role="tab" aria-controls="<%= key %>" aria-selected="true"><%= key %></a>
+                        </li>
+                    <% }) %>
+                </ul>
+                
+                <!-- Tab panes -->        
+                  <div class="tab-content">
+                    <% itemsMap.forEach((value, key) => { 
+                        const confirmed = selectedStaff.confirmedMonth.find(v => v === key);
+                    %>
+                        <div class="tab-pane fade <%= selectedMonth === key ? 'show active' : '' %>" id="<%= key %>" role="tabpanel" aria-labelledby="<%= key %>-tab">
+                            <form method="post" action="/xacnhanthang">
+                                <h5 class="text-center">Tháng: <%= key %></h5>
+                                <input type="hidden" name="month" value="<%= key %>">
+                                <input type="hidden" name="staffId" value="<%= selectedStaff._id.toString() %>">
+                                <input type="hidden" name="url" value="<%= `/xacnhan?id=${selectedStaff._id.toString()}&month=${key}` %>" />
+                                <div class="float-right">
+                                    <% if (confirmed) { %>
+                                        <span class="badge badge-success p-2 mb-2 m-1 mr-3">Đã xác nhận</span>
+                                    <% } else { %>
+                                        <button class="btn btn-success mb-2 m-1 mr-3" type="submit">Xác nhận</button>
+                                    <% } %>
+                                </div>
+                            </form>
+                            <table class="table">
+                                <thead>
+                                  <tr>
+                                    <th>Ngày</th>
+                                    <th>Nơi làm việc</th>
+                                    <th>Số giờ nghỉ phép</th>
+                                    <th>Giờ bắt đầu</th>
+                                    <th>Giờ kết thúc</th>
+                                    <th class="text-center">Tổng số giờ</th>
+                                    <th class="text-center">Giờ làm thêm</th>
+                                    <% if (!confirmed) { %>
+                                        <th>Hành động</th>
+                                    <% } %>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                        <% value.forEach(i => { %>
+                                            <tr>
+                                                <td><%= formatDate(i.submition.date) %></td>
+                                                <td><%= i.workplace %></td>
+                                                <td><%= i.submition.breakTime %></td>
+                                                <td><%= formatTime(i.startTime) %></td>
+                                                <td><%= i.endTime ? formatTime(i.endTime) : 'Chưa kết thúc' %></td>
+                                                <% if (i.totalHour || i.totalHour == 0) { %> 
+                                                    <td class="text-center"><strong><%= i.totalHour %>h</strong></td>
+                                                    <td class="text-center"><strong><%= i.totalHour - 8 %>h</strong></td>
+                                                <% } else { %>
+                                                    <td></td><td></td>
+                                                <% } %>
+                                                <% if (i.endTime && !confirmed) { %>
+                                                    <td class="text-center">
+                                                        <form method="post" action="/xoagiolam/<%= i._id.toString() %>">
+                                                            <input type="hidden" name="submitionId" value="<%= i.submition._id.toString() %>">
+                                                            <input type="hidden" name="url" value="<%= `/xacnhan?id=${selectedStaff._id.toString()}&month=${key}` %>" />
+                                                            <button class="btn btn-danger" type="submit">Xóa</button>
+                                                        </form>
+                                                    </td>                
+                                                <% } %>
+                                            </tr>
+                                        <% }) %>
+                                </tbody>
+                              </table>
+                        </div>
+                    <% }) %>
+                  </div>
+            </div>
+        <% } %>
+    </div>
+    <%- include('./includes/end.ejs') %>
