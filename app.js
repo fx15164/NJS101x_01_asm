@@ -43,6 +43,7 @@ mongoose.connect('mongodb://localhost:27017/asm')
                         startDate: Date.now(),
                         department: 'x',
                         annualLeave: 4,
+                        isCovid: false
                     }).save();
                 }
                 return staff;

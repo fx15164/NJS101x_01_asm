@@ -31,30 +31,24 @@ const staffSchema = new Schema({
     imageUrl: String,
     temperatures: [{    
         temperature: {
-            type: Number,
-            required: true
+            type: Number
         },
         date: {
-            type: Date,
-            required: true
+            type: Date
         },
     }],
     vacine: {
         first: {
-            type: String,
-            required: true
+            type: String
         },
         firstDate: {
-            type: Date,
-            required: true
+            type: Date
         },
         second: {
-            type: String,
-            required: true
+            type: String
         },
         secondDate: {
-            type: Date,
-            required: true
+            type: Date
         }
     },
     isCovid: {
