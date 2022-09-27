@@ -58,7 +58,7 @@
                         <div class="card mt-4">
                             <div class="card-body">
                               <h5 class="card-title"><%= s.name %></h5>
-                              <p class="card-text">Tình trạng: <strong><%= s.ísCovid ? 'Dương tính' : 'Âm tính' %></strong></p>
+                              <p class="card-text">Tình trạng: <strong><%= s.isCovid === true ? 'Dương tính' : 'Âm tính' %></strong></p>
                               <p class="card-text">Mũi 1: <%= s.vacine.first ? s.vacine.first : 'Chưa khai báo' %></p>
                               <p class="card-text">Mũi 2: <%= s.vacine.first ? s.vacine.second : 'Chưa khai báo' %></p>
                             </div>
